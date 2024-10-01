@@ -50,7 +50,7 @@ def get_cpu_usage():
     idle_time_delta = idle_time_2 - idle_time_1
 
     cpu_usage = 100 * (1 - (idle_time_delta / total_time_delta))
-    return round(cpu_usage, 2)
+    return cpu_usage
 
 def get_memory_info():
     """Retorna a memória total e usada (MB)"""

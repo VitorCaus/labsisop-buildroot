@@ -13,3 +13,7 @@ fi
 BUILDROOT_DIR=$BASE_DIR/..
 COMPILER=$BUILDROOT_DIR/output/host/bin/i686-buildroot-linux-gnu-gcc
 $COMPILER -o $BUILDROOT_DIR/output/target/bin/syscall_test $BUILDROOT_DIR/custom-scripts/syscall_test.c
+
+# Copiar diskTest (tutorial 2.4) para target
+cp $BASE_DIR/../disk-test/diskTest $BASE_DIR/target/usr/bin
+chmod +x $BASE_DIR/target/usr/bin/diskTest

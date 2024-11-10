@@ -17,3 +17,9 @@ $COMPILER -o $BUILDROOT_DIR/output/target/bin/syscall_test $BUILDROOT_DIR/custom
 # Copiar diskTest (tutorial 2.4) para target
 cp $BASE_DIR/../disk-test/diskTest $BASE_DIR/target/usr/bin
 chmod +x $BASE_DIR/target/usr/bin/diskTest
+
+# Copiar setPriority e deadline (teste tutorial 3.1) para target
+cp $BASE_DIR/../custom-scripts/setpriority-master/setpriority $BASE_DIR/target/usr/bin
+cp $BASE_DIR/../custom-scripts/setpriority-master/deadline $BASE_DIR/target/usr/bin
+chmod +x $BASE_DIR/target/usr/bin/setpriority
+chmod +x $BASE_DIR/target/usr/bin/deadline

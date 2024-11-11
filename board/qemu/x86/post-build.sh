@@ -23,3 +23,7 @@ cp $BASE_DIR/../custom-scripts/setpriority-master/setpriority $BASE_DIR/target/u
 cp $BASE_DIR/../custom-scripts/setpriority-master/deadline $BASE_DIR/target/usr/bin
 chmod +x $BASE_DIR/target/usr/bin/setpriority
 chmod +x $BASE_DIR/target/usr/bin/deadline
+
+# Copiar sched_profiler (trabalho 3) para target
+cp $BASE_DIR/../custom-scripts/trabalho3/sched_profiler $BASE_DIR/target/usr/bin
+chmod +x $BASE_DIR/target/usr/bin/sched_profiler

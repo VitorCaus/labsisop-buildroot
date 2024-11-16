@@ -8,11 +8,13 @@
 //  SCHED_FIFO		1
 //  SCHED_RR		2
 //  SCHED_BATCH		3
-// #define  SCHED_IDLE		5
+//  SCHED_IDLE		5
 //  SCHED_DEADLINE	6
-// #define SCHED_LOW_IDLE 7
+//  SCHED_LOW_IDLE  7
 
 #define COMPRIMENTO_QUEBRA_LINHA	100
+
+#define _GNU_SOURCE
 
 char *buffer;
 int tam_buffer;
@@ -23,31 +25,31 @@ char letras[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 int contadores_letras[] = {0, 0, 0, 0, 0, 0, 0, 0};
 char *buffer_resumido;
 int liberado = 0;
+pthread_barrier_t barreira;
 
 void* add_buffer(void* args){
+
+	pthread_barrier_wait(&barreira);
 	
 	char letraThread = *((char*)args);
+
 	while(1){
-
-		if(liberado){
-
-			sem_wait(&semaforo_buffer);
-			
-			if(posicao >= tam_buffer){
-				sem_post(&semaforo_buffer);
-				break;
-			}
-
-			buffer[posicao] = letraThread;
-			printf("%c", buffer[posicao]);
-			posicao++;
-
-			if(posicao % COMPRIMENTO_QUEBRA_LINHA == 0){
-				printf("\n");
-			}
-
+		sem_wait(&semaforo_buffer);
+		
+		if(posicao >= tam_buffer){
 			sem_post(&semaforo_buffer);
+			break;
 		}
+
+		buffer[posicao] = letraThread;
+		printf("%c", buffer[posicao]);
+		posicao++;
+
+		if(posicao % COMPRIMENTO_QUEBRA_LINHA == 0){
+			printf("\n");
+		}
+
+		sem_post(&semaforo_buffer);
 	}
 	return NULL;
 }
@@ -89,12 +91,6 @@ void print_sched(int policy)
 
 
 
-//  SCHED_NORMAL	0
-//  SCHED_FIFO		1
-//  SCHED_RR		2
-//  SCHED_BATCH		3
-//  SCHED_IDLE		5
-//  SCHED_DEADLINE	6
 int setpriority(pthread_t *thr, int newpolicy, int newpriority)
 {
 	int policy, ret;
@@ -163,6 +159,7 @@ int main(int argc, char** argv){
 	buffer = (char*)malloc((tam_buffer + 1) * sizeof(char));
 	buffer_resumido = (char*)malloc((tam_buffer + 1) * sizeof(char));
 
+	pthread_barrier_init(&barreira, NULL, num_threads);
 
 	pthread_t threads[num_threads];
 
@@ -172,10 +169,6 @@ int main(int argc, char** argv){
 	for(int i = 0; i<num_threads; i++){
 		pthread_create(&threads[i], NULL, add_buffer, &letras[i]);
 		setpriority(&threads[i], policy, 0);
-		
-		if(i == num_threads-1){
-			liberado = 1;
-		}
 	}
 
 	for(int i = 0; i<num_threads; i++){
@@ -183,6 +176,7 @@ int main(int argc, char** argv){
 	}
 	
 	sem_destroy(&semaforo_buffer);
+    pthread_barrier_destroy(&barreira);
 
 	resumir_buffer();
 
